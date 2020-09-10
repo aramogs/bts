@@ -1,0 +1,804 @@
+<%- include ("./static/header") %>
+
+<%- include ("./static/sidebar") %>
+<%- include ("./static/navbar") %>
+
+
+
+<div class="col-xl-12 jumbotron jumbotron-fluid animated bounceInDown bg-transparent jumbotronBg">
+    <div class="container">
+        <img src="/img/TristoneLogo.png" class="img-logo rounded mx-auto d-block" alt="Tristone Flowtech">
+        <h1 class="display-4 text-center csvTitulo">Ajuste del plan de produccion</h1>
+        <p class="lead text-center"></p>
+    </div>
+</div>
+<div class="container-fluid animated bounceInUp">
+    <div class="card bg-light  ">
+        <div class=" card-header text-white bg-dark ">
+            <div class="row">
+                <div class="col-lg-4"></div>
+
+
+
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>Fecha</label>
+                        <input type="text" class="form-control text-center grow" name="date" id="selectFecha"
+                            aria-describedby="helpId" placeholder="Seleccionar Fecha" autocomplete="off">
+
+                    </div>
+                </div>
+
+
+
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>Cliente</label>
+                        <select class="form-control text-center grow" id="selectCliente" disabled>
+                            <option value="">Seleccionar</option>
+
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="col-lg-4"></div>
+            </div>
+
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-1"></div>
+            <div class="col-5">
+                <div class="card">
+                    <div class="card-header bg-dark text-white text-center">
+                        <h4 class="card-title">BTS Diario <span class="badge badge-primary bCliente">General</span></h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-right">
+                            <table class="table  table-light tabl-sm table-hover">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <h5 class="card-text">Programado:</h5>
+                                        </td>
+                                        <td>
+                                            <h4><span class="badge badge-secondary bProgDia"></span></h4>
+                                        </td>
+                                        <td>
+                                            <h5 class="card-text">Producido:</h5>
+                                        </td>
+                                        <td>
+                                            <h4><span class="badge badge-secondary bProdDia"></span></h4>
+                                        </td>
+                                        <td>
+                                            <h5 class="card-text">Restante:</h5>
+                                        </td>
+                                        <td>
+                                            <h4><span class="badge badge-secondary bRestanteDia"></span></h4>
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h5 class="card-text">Mezcla:</h5>
+                                        </td>
+                                        <td>
+                                            <h4><span class="badge badge-secondary bMezclaDia"></span></h4>
+                                        </td>
+                                        <td>
+                                            <h5 class="card-text">BTS:</h5>
+                                        </td>
+                                        <td>
+                                            <h4><span class="badge badge-secondary bBtsDia"></span></h4>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <canvas id="myChart" width="100" height="20"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-5">
+                <div class="card">
+                    <div class="card-header bg-dark text-white text-center">
+                        <h4 class="card-title">BTS Mensual <span class="badge badge-primary bCliente">General</span>
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-right">
+                            <table class="table  table-light tabl-sm table-hover">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <h5 class="card-text">Programado:</h5>
+                                        </td>
+                                        <td>
+                                            <h4><span class="badge badge-secondary bProgmes"></span></h4>
+                                        </td>
+                                        <td>
+                                            <h5 class="card-text">Producido:</h5>
+                                        </td>
+                                        <td>
+                                            <h4><span class="badge badge-secondary bProdmes"></span></h4>
+                                        </td>
+                                        <td>
+                                            <h5 class="card-text">Restante:</h5>
+                                        </td>
+                                        <td>
+                                            <h4><span class="badge badge-secondary bRestanteMes"></span></h4>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h5 class="card-text">Mezcla:</h5>
+                                        </td>
+                                        <td>
+                                            <h4><span class="badge badge-secondary bMezclames"></span></h4>
+                                        </td>
+                                        <td>
+                                            <h5 class="card-text">BTS:</h5>
+                                        </td>
+                                        <td>
+                                            <h4><span class="badge badge-secondary bBtsmes"></span></h4>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <canvas id="myChart2" width="100" height="20"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-1"></div>
+        </div>
+
+        <div class="card-body">
+            <div class="container-fluid ">
+                <form action="/guardarAjuste" method="POST">
+                    <div class="row">
+                        <input id="btnSubmit" class="btn btn-info btn-block" type="submit" value="Guardar Cambios"
+                            disabled style="visibility: hidden">
+                    </div>
+                    <br>
+                    <input type="text" class="form-control text-center grow" name="fecha" id="fecha" hidden>
+
+                    <div class="row">
+                        <table class="table table-hover table-responsive text-center table-bordered table-sm"
+                            id="tablaProgramacion">
+                            <thead class="thead-dark">
+                                <tr class="header">
+                                    <th scope="col" style="width: 0%;" hidden>ID</th>
+                                    <th scope="col" style="width: 10%;">Supervisor</th>
+                                    <th scope="col" style="width: 10%;">N.Parte</th>
+                                    <th scope="col" style="width: 5%;">Progamado</th>
+                                    <th scope="col" style="width: 5%">Producido</th>
+                                    <th scope="col" style="width: 7%;">Dif</th>
+                                    <th scope="col" style="width: 15%;">Causa</th>
+                                    <th scope="col" style="width: 7%;">Piezas</th>
+                                    <th scope="col" style="width: auto;">Responsable</th>
+                                    <th scope="col" style="width: auto;">Justificacion</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- INFO AGREGADA DESDE JAVASCRIPT -->
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade animate__animated animate__zoomInDown" id="myModal2" tabindex="-1" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h2 class="modal-title " id="myModalLabel"> <span
+                        class="text-success  fas fa-exclamation-circle"></span>
+                    Produccion cargada con exito</h2>
+            </div>
+            <div class="modal-body text-center">
+                <p id="cantidadSuccess" style="font-size: x-large">Para seguir capturando cierre esta ventana</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btnCancelar btn btn-primary btn-block mr-auto" data-dismiss="modal"><span
+                        class="text-white fas fa-times-circle"></span>
+                    Salir</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<%- include ("./static/footer") %>
+
+<script>
+
+
+    if ("<%=status%>" == "guardado") {
+        $('#myModal2').modal('show');
+    }
+
+    //TODO tooltip en programado original para ver cuanto era el original sin cambio 
+
+    const picker = datepicker('#selectFecha', {
+        customDays: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+        overlayPlaceholder: 'Seleccionar Mes',
+        customMonths: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        disabled: true,
+        minDate: new Date(2020, 0, 1),
+        formatter: (input, date, instance) => {
+            let mm = date.getMonth() + 1;
+            let dd = date.getDate();
+            let yy = date.getFullYear();
+            let myDateString = yy + '-' + mm + '-' + dd;
+            input.value = myDateString
+            fecha.value = myDateString
+            selectCliente.options.selectedIndex = 0
+            getInfo(myDateString)
+            
+        }
+    })
+
+    let bBtsDia = document.querySelector('.bBtsDia')
+    let bMezclaDia = document.querySelector('.bMezclaDia')
+    let bProgDia = document.querySelector('.bProgDia')
+    let bProdDia = document.querySelector('.bProdDia')
+    let bCliente = document.querySelectorAll('.bCliente')
+    let selectCliente = document.getElementById('selectCliente')
+    let selectFecha = document.getElementById('selectFecha')
+    let fecha = document.getElementById('fecha')
+
+    let tProd = document.querySelectorAll('.tProducido')
+    let btnSubmit = document.getElementById('btnSubmit')
+    let prodIncompleto = []
+    let prodCompleto = []
+    let tituloSuccess = document.getElementById("tituloSuccess")
+
+   
+    selectCliente.addEventListener('change', () => { filterAll(), filterArea(), bClienteChange(), fillCards() })
+    btnSubmit.addEventListener('mouseover', () => { btnSubmit.focus() })
+
+
+
+    function getInfo(fecha) {
+        axios.get(`/getAjuste/${fecha}`)
+            .then((response) => {
+                let programacion = response.data
+
+
+
+                let tableRef = document.getElementById('tablaProgramacion').getElementsByTagName('tbody')[0];
+                let tableHead = document.getElementById('tablaProgramacion').getElementsByTagName('th');
+                tableRef.innerHTML = "";
+                let componente = ""
+
+                if (programacion.length > 1) {
+                    selectCliente.disabled = false
+
+
+                    programacion.forEach((numero) => {
+
+                        let diferencia = 0
+                        let tdifProgramado = ''
+                        let cantidadProgramada = 0
+                        let supervisor = numero.supervisor !== null ? numero.supervisor : ""
+
+                        if (numero.cantidad_ajustada != null) {
+                            diferencia = numero.cantidad_ajustada + numero.piezas
+                            cantidadProgramada = numero.cantidad_ajustada
+                        } else {
+                            diferencia = numero.cantidad + numero.piezas
+                            cantidadProgramada = numero.cantidad
+                        }
+
+                        if (numero.producido != null) {
+
+                            diferencia = cantidadProgramada - numero.producido
+
+
+                            if (cantidadProgramada < numero.producido) {
+
+                                selectCausa = numero.causa
+                                selectJustificacion = numero.justificacion
+                                tdifProgramado = "bg-warning"
+                            } else if (cantidadProgramada > numero.producido) {
+                                selectCausa = numero.causa
+                                selectJustificacion = numero.justificacion
+                                tdifProgramado = "bg-danger"
+                            } else {
+                                selectCausa = ""
+                                selectJustificacion = ""
+                                tdifProgramado = "bg-success"
+                            }
+
+
+
+                            row = `
+                            <tr>
+                                <td style="display:none;"><input type="text" class="tId" value="${numero.id}" name="id" hidden ></td>
+                                <td style="display:none;"><input type="text" class="mezcla" value="${Math.min(cantidadProgramada, numero.producido)}"  hidden ></td>
+                                <td><input type="text" class="form-control tSupervisor  bg-secondary text-white" value="${supervisor}" disabled></td>
+                                <td><input type="text" class="form-control tNumeroParte bg-secondary text-white" value="${numero.numero_parte}"  disabled></td>
+                                <td><input type="number" class="form-control tProgramado  bg-secondary text-white ${tdifProgramado}" value="${cantidadProgramada}" disabled></td>
+                                <td><input type="number" class="form-control tProducido bg-secondary text-white" name="producido-${numero.id}" value="${numero.producido}" disabled></td>
+                                <td><input type="number" class="form-control tDif bg-secondary text-white" value="${diferencia}" disabled></td>
+                                <td><input type="text" class="form-control tCausa" value="${selectCausa}" name="causa-${numero.id}" disabled></td>
+
+                                <td><input type="number" class="form-control tPiezas" name="piezas-${numero.id}" value=""></td>
+
+                                <td>
+                                    <select class="form-control tResponsable"  name="responsable-${numero.id}"  disabled    >
+                                        <option>Seleccionar</option>
+                                        <% for (let i = 0; i < responsables.length; i++) { %>
+                                            <option><%=responsables[i].emp_alias%></option><%}%>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control tJustificacion"  name="justificacion-${numero.id}" disabled>
+                                        <option>Seleccionar</option
+                                        <% for (let i = 0; i < justificacion.length; i++) { %>
+                                            <option><%=justificacion[i].justificacion%></option><%}%>
+                                    </select>
+                                </td>
+                            </tr>
+                            `
+                        } else {
+                            row = ` 
+                            <tr>
+                                <td style="display:none;"><input type="text" class="form-control tId bg-secondary text-white" value="${numero.id}" name="id" hidden ></td>
+                                <td><input type="text" class="form-control tSupervisor  bg-secondary text-white" value="${supervisor}" disabled></td>
+                                <td><input type="text" class="form-control tNumeroParte bg-secondary text-white" value="${numero.numero_parte}"  disabled></td>
+                                <td><input type="number" class="form-control tProgramado bg-secondary text-white ${tdifProgramado}" value="${cantidadProgramada}" disabled></td>
+                                <td><input type="number" class="form-control tProducido bg-secondary text-white" name="producido-${numero.id}"disabled ></td>
+                                <td><input type="number" class="form-control bg-secondary tDif" value="" disabled></td>
+                                <td><input type="text" class="form-control tCausa"  name="causa-${numero.id}" disabled></td>
+                                <td><input type="number" class="form-control tPiezas" name="piezas-${numero.id}" value="" ></td>
+                                <td>
+                                    <select class="form-control tResponsable"  name="responsable-${numero.id}" disabled>
+                                        <option>Seleccionar</option>
+                                        <% for (let i = 0; i < responsables.length; i++) { %>
+                                            <option><%=responsables[i].emp_alias%></option><%}%>
+                                    </select>
+                                </td>
+                                    <td>
+                                    <select class="form-control tJustificacion"  name="justificacion-${numero.id}" disabled>
+                                        <option>Seleccionar</option
+                                        <% for (let i = 0; i < justificacion.length; i++) { %>
+                                            <option><%=justificacion[i].justificacion%></option><%}%>
+                                    </select>
+                                </td>
+
+                            </tr>
+                            `
+                        }
+                        let newRow = tableRef.insertRow(tableRef.rows.length);
+                        newRow.classList.add(`turno-${numero.turno},cliente-${(numero.cliente).replace(/\s+/g, '')},area-${(numero.area)}`)
+                        return newRow.innerHTML = row;
+                    })
+
+                } else {
+                    row = `<td colspan="${tableHead.length}"><div class="alert alert-warning" role="alert" style="font-size: larger;"><span class="fas fa-exclamation-circle"></span>Sin programacion</div></td>`
+                    let newRow = tableRef.insertRow(tableRef.rows.length);
+
+                    selectCliente.disabled = true
+
+                    return newRow.innerHTML = row;
+                }
+
+                return programacion
+            })
+            .then((response) => { fillOptions(response), checkDif(response) })
+            .catch((error) => { console.error(error) })
+            .finally(() => { });
+    }
+
+
+    function fillOptions(programacion) {
+        fillCards()
+        let areas = []
+        let clientes = []
+        let turnos = []
+
+
+        selectCliente.innerHTML = ""
+
+        option = document.createElement('option')
+        option1 = document.createElement('option')
+        option2 = document.createElement('option')
+        option.text = "Seleccionar"
+        option1.text = "Seleccionar"
+        option2.text = "Seleccionar"
+
+        selectCliente.add(option1)
+
+
+
+
+        for (let i = 0; i < programacion.length; i++) {
+            turno = programacion[i].turno
+            if (turnos.indexOf(turno) === -1) {
+                turnos.push(turno)
+                option = document.createElement('option')
+                option.text = turno
+
+
+            }
+        }
+
+        for (let i = 0; i < programacion.length; i++) {
+            cliente = programacion[i].cliente
+            if (clientes.indexOf(cliente) === -1) {
+                clientes.push(`${cliente}`)
+                option = document.createElement('option')
+                option.text = cliente
+                selectCliente.add(option)
+
+            }
+        }
+
+        for (let i = 0; i < programacion.length; i++) {
+            area = programacion[i].area
+            if (areas.indexOf(area) === -1) {
+                areas.push(area)
+                option = document.createElement('option')
+                option.text = area
+
+
+            }
+        }
+
+    }
+
+
+    function filterAll() {
+
+        selectC = selectCliente.options[selectCliente.options.selectedIndex].innerHTML
+        const trs = document.querySelectorAll('#tablaProgramacion tr:not(.header)');
+        if (selectC == "Seleccionar") { selectC = "" }
+        trs.forEach(tr => {
+            if (tr.className.includes(`cliente-${selectC.replace(/\s+/g, '')}`)) {
+                tr.style.display = ""
+            } else {
+                tr.disabled = true
+                tr.style.display = "none"
+            }
+        })
+    }
+
+    function filterArea() {
+        option.text = "Seleccionar"
+        selectC = selectCliente.options[selectCliente.options.selectedIndex].innerHTML
+        let partnums = document.querySelectorAll(".tNumeroParte")
+        let trs = document.querySelectorAll('#tablaProgramacion tr:not(.header)')
+
+        let index = []
+        let areas = []
+
+        for (let i = 0; i < trs.length; i++) {
+            if (trs[i].style.display !== "none") {
+                index.push(i)
+            }
+        }
+
+        for (let i = 0; i < index.length; i++) {
+            axios.get(`/getPlataforma/${partnums[index[i]].value}`)
+                .then((response) => {
+                    let area = response.data[0].area
+
+                    if (areas.indexOf(area) === -1) {
+                        areas.push(area)
+                        option = document.createElement('option')
+                        option.text = area
+                    }
+                })
+                .catch((error) => { console.error(error) })
+        }
+    }
+
+
+    function bClienteChange() {
+        bCliente.forEach(element => {
+            if (selectCliente.value == "Seleccionar") {
+                element.innerHTML = "General"
+            } else {
+                element.innerHTML = selectCliente.value
+            }
+
+        });
+
+    }
+
+    function fillCards() {
+
+        
+
+        let selectC = selectCliente.options[selectCliente.options.selectedIndex].innerHTML
+        let tProgramado = document.querySelectorAll('.tProgramado')
+        let tProducido = document.querySelectorAll('.tProducido')
+        let mezcla = document.querySelectorAll('.mezcla')
+        let fecha = document.getElementById('fecha').value
+
+        let bProgmes = document.querySelector('.bProgmes')
+        let bProdmes = document.querySelector('.bProdmes')
+        let bMezclames = document.querySelector('.bMezclames')
+        let bBtsmes = document.querySelector('.bBtsmes')
+        let bRestanteDia = document.querySelector('.bRestanteDia')
+        let bRestanteMes = document.querySelector('.bRestanteMes')
+
+        let totalProgramado = 0
+        let totalProducido = 0
+        let totalMezcla = 0
+
+
+        let yy = new Date(fecha).getFullYear();
+        let mm = new Date(fecha).getMonth() + 1;
+        let dd = new Date(fecha).getDate();
+        let currYY = new Date().getFullYear();
+        let currMM = new Date().getMonth() + 1;
+
+
+
+        let selectedDate = `${yy}-${mm}-${dd}`
+        let selectedMonth = `${currYY}-${currMM}-1`
+
+        if (selectC == "Seleccionar") {
+
+            tProgramado.forEach(element => {
+                totalProgramado = totalProgramado + parseInt(element.value)
+            });
+            tProducido.forEach(element => {
+                if (element.value != "") totalProducido = totalProducido + parseInt(element.value)
+
+            });
+
+            mezcla.forEach(element => {
+                if (element.value != "") totalMezcla = totalMezcla + parseInt(element.value)
+
+            });
+        } else {
+            tProgramado.forEach(element => {
+                if (element.parentElement.parentElement.style.display !== "none" && element.value != "") totalProgramado = totalProgramado + parseInt(element.value)
+            })
+
+            tProducido.forEach(element => {
+                if (element.parentElement.parentElement.style.display !== "none" && element.value != "") totalProducido = totalProducido + parseInt(element.value)
+            });
+            mezcla.forEach(element => {
+                if (element.parentElement.parentElement.style.display !== "none" && element.value != "") totalMezcla = totalMezcla + parseInt(element.value)
+            });
+        }
+
+        axios.get(`/getCantidadMensual/${selectedDate}/${selectedMonth}/${selectC}`)
+            .then((result) => {
+
+                let produccion = result.data
+                let totalProg = 0
+                let totalProd = 0
+                let totalMez = 0
+
+
+
+
+                produccion.forEach(element => {
+                    totalProg = element.cantidad_ajustada !== null ? totalProg + element.cantidad_ajustada : totalProg + element.cantidad
+                });
+
+                produccion.forEach(element => {
+                    if (element.producido !== null) totalProd = totalProd + element.producido
+                });
+
+                produccion.forEach(element => {
+                    if (element.producido !== null)
+                        totalMez = element.cantidad_ajustada !== null ? totalMez + Math.min(element.cantidad_ajustada, element.producido) : totalMez + Math.min(element.cantidad, element.producido)
+                });
+
+
+                bProgmes.innerHTML = totalProg
+                bProdmes.innerHTML = totalProd
+                bMezclames.innerHTML = totalMez
+                bRestanteMes.innerHTML = totalProg - totalProd
+
+
+
+                let perMezclaMes = totalMez / totalProd
+                let perProdMes = totalProd > totalProg ? 1 : totalProd / totalProg
+                let bts = isNaN(Math.round((perProdMes * perMezclaMes) * 100)) ? 0 : Math.round((perProdMes * perMezclaMes) * 100)
+
+
+
+                bBtsmes.innerHTML = bts + "%"
+
+                chartMes(perProdMes, perMezclaMes, bts)
+
+            })
+            .catch((err) => { console.error(err) })
+
+
+        bProgDia.innerHTML = totalProgramado
+        bProdDia.innerHTML = totalProducido
+        bMezclaDia.innerHTML = totalMezcla
+        bRestanteDia.innerHTML = totalProgramado - totalProducido
+        chartDia()
+
+    }
+
+
+
+    function checkDif(producido) {
+        let tId = document.querySelectorAll('.tId')
+        let tNumeroParte = document.querySelectorAll('.tNumeroParte')
+        let tProgramado = document.querySelectorAll('.tProgramado')
+        let tProducido = document.querySelectorAll('.tProducido')
+        let tPiezas = document.querySelectorAll('.tPiezas')
+        let tDif = document.querySelectorAll('.tDif')
+        let tResponsable = document.querySelectorAll('.tResponsable')
+        let tJustificacion = document.querySelectorAll('.tJustificacion')
+
+
+
+
+        for (let i = 0; i < tNumeroParte.length; i++) {
+            tPiezas[i].addEventListener('keyup', () => {
+                if (tProgramado[i].value == tPiezas[i].value) {
+                    tResponsable[i].disabled = true
+                    tJustificacion[i].disabled = true
+                } else if (tPiezas[i].value == "" || tPiezas[i].value.length == 0) {
+                    tResponsable[i].disabled = true
+                    tJustificacion[i].disabled = true
+                } else {
+                    tResponsable[i].disabled = false
+                    tJustificacion[i].disabled = false
+                }
+            })
+            tPiezas[i].addEventListener('change', () => {
+
+                if (tProgramado[i].value == tPiezas[i].value) {
+                    prodCompleto.push({ id: tId[i].value, producido: tPiezas[i].value })
+                } else if (tPiezas[i].value == "" || tPiezas[i].value.length == 0) {
+                    let indexComp = prodCompleto.findIndex(obj => obj.id == tId[i].value)
+                    let indexInc = prodIncompleto.findIndex(obj => obj.id == tId[i].value)
+                    if (indexComp !== -1) {
+                        prodCompleto.splice(indexComp, 1)
+                    }
+                    if (indexInc !== -1) {
+                        prodIncompleto.splice(indexInc, 1)
+                    }
+                } else {
+                    prodIncompleto.push({ id: tId[i].value, producido: tPiezas[i].value })
+                }
+
+                if (prodCompleto.length > 0 || prodIncompleto.length > 0) {
+                    btnSubmit.disabled = false
+                    btnSubmit.style.visibility = "visible"
+                    btnSubmit.classList.remove('animate__animated', 'animate__flipOutX')
+                    btnSubmit.classList.add('animate__animated', 'animate__flipInX', 'animate__delay-1s')
+                } else if (prodCompleto.length == 0 && prodIncompleto.length == 0) {
+                    btnSubmit.disabled = true
+                    btnSubmit.classList.remove('animate__animated', 'animate__flipInX', 'animate__delay-1s')
+                    btnSubmit.classList.add('animate__animated', 'animate__flipOutX')
+                    setTimeout(function () {
+                        btnSubmit.style.visibility = "hidden"
+                    }, 1000);
+
+                }
+
+            })
+        }
+    }
+
+
+    function chartDia() {
+
+        let progDia = parseInt(bProgDia.innerHTML)
+        let prodDia = parseInt(bProdDia.innerHTML)
+        let mezclaDia = parseInt(bMezclaDia.innerHTML)
+
+        let perMezcla = mezclaDia / prodDia
+        let perProd = prodDia > progDia ? 1 : prodDia / progDia
+        let bts = isNaN(Math.round((perProd * perMezcla) * 100)) ? 0 : Math.round((perProd * perMezcla) * 100)
+
+        bBtsDia.innerHTML = bts + "%"
+
+        let ctx = document.getElementById('myChart').getContext('2d');
+        if (window.bar != undefined)
+            window.bar.destroy();
+        window.bar = new Chart(ctx, {
+            type: 'horizontalBar',
+            data: {
+                labels: ['Producido', 'Mezcla', 'BTS'],
+                datasets: [{
+                    label: false,
+                    data: [Math.round(perProd * 100), Math.round(perMezcla * 100), bts],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    xAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            min: 0,
+                            max: 100,
+
+                        },
+
+                    }]
+                },
+                legend: {
+                    display: false
+                }
+            }
+        });
+
+    }
+
+    function chartMes(producido, mezcla, bts) {
+
+        let ctx2 = document.getElementById('myChart2').getContext('2d');
+        if (window.bar2 != undefined)
+            window.bar2.destroy();
+        window.bar2 = new Chart(ctx2, {
+            type: 'horizontalBar',
+            data: {
+                labels: ['Producido', 'Mezcla', 'BTS'],
+                datasets: [{
+                    label: false,
+                    data: [Math.round(producido * 100), Math.round(mezcla * 100), bts],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    xAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            min: 0,
+                            max: 100,
+
+                        },
+
+                    }]
+                },
+                legend: {
+                    display: false
+                }
+            }
+        })
+    }
+
+
+
+
+</script>

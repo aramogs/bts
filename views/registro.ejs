@@ -1,0 +1,559 @@
+<%- include ("./static/header") %>
+<%- include ("./static/sidebar") %>
+<%- include ("./static/navbar") %>
+
+
+
+<div class="col-xl-12 jumbotron jumbotron-fluid animated bounceInDown bg-transparent jumbotronBg">
+    <div class="container">
+        <img src="/img/TristoneLogo.png" class="img-logo rounded mx-auto d-block" alt="Tristone Flowtech">
+        <h1 class="display-4 text-center csvTitulo">Registro de produccion diaria</h1>
+        <p class="lead text-center"></p>
+    </div>
+</div>
+<div class="container-fluid animated bounceInUp">
+    <div class="card bg-light  ">
+        <div class=" card-header text-white bg-secondary ">
+            <div class="row">
+                <div class="col-lg-2"></div>
+
+                    
+
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>Fecha</label>
+                        <input type="text" class="form-control text-center grow" name="date" id="selectFecha"
+                            aria-describedby="helpId" placeholder="Seleccionar Fecha" autocomplete="off">
+                        
+                    </div>
+                </div>
+
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>Turno</label>
+                        <select class="form-control text-center grow" id="selectTurno" disabled>
+                            <option value="">Seleccionar</option>
+
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>Cliente</label>
+                        <select class="form-control text-center grow" id="selectCliente" disabled>
+                            <option value="">Seleccionar</option>
+
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label><a role="button" class="text-white" tabindex="0" data-toggle="popover"
+                                data-trigger="hover" data-popover-content="#a1" data-placement="left">Area </a>
+                            <span class="fas fa-hand-point-left text-white" id="handSpan"></span></label>
+
+                        <select class="form-control text-center grow" id="selectArea" disabled>
+                            <option value="">Seleccionar</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-lg-2"></div>
+            </div>
+
+        </div>
+
+        <div class="card-body">
+            <div class="container-fluid ">
+                <form action="/guardarProd" method="POST">
+                    <div class="row">
+                        <input id="btnSubmit" class="btn btn-info btn-block" type="submit" value="Guardar Cambios"
+                            disabled style="visibility: hidden">
+                            <input type="text" name="userName" value="<%= user %>" hidden>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <table class="table table-hover table-responsive text-center table-bordered table-sm"
+                            id="tablaProgramacion">
+                            <thead class="thead-dark">
+                                <tr class="header">
+                                    <th scope="col" style="width: 0%;" hidden>ID</th>
+                                    <th scope="col" style="width: 10%;">N.Parte</th>
+                                    <th scope="col" style="width: 5%;">Progamado</th>
+                                    <th scope="col" style="width: 5%">Producido</th>
+                                    <th scope="col" style="width: 10%;">Dif</th>
+                                    <th scope="col" style="width: 15%;">Causa</th>
+                                    <th scope="col" style="width: 15%;">Manguera/Componente</th>
+                                    <th scope="col" style="width: 25%;">Justificacion</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- INFO AGREGADA DESDE JAVASCRIPT -->
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+<!-- Modal -->
+<div class="modal fade animate__animated animate__zoomInDown" id="myModal2" tabindex="-1" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h2 class="modal-title " id="myModalLabel"> <span
+                        class="text-success  fas fa-exclamation-circle"></span>
+                    Produccion cargada con exito</h2>
+            </div>
+            <div class="modal-body text-center">
+                <p id="cantidadSuccess" style="font-size: x-large">Para seguir capturando cierre esta ventana</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btnCancelar btn btn-primary btn-block mr-auto" data-dismiss="modal"><span
+                        class="text-white fas fa-times-circle"></span>
+                    Salir</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- //TODO grafico para supervisores, pero por areas no por clientes -->
+    <!-- //TODO grafico para supervisores, tambien grafico de bts por cliente-->
+
+<div id="a1" style="display: none;">
+    <div class="popover-body">
+        <table class="table table-hover table-responsive">
+            <tr>
+                <th>Area</th>
+                <th>Plataforma</th>
+            </tr>
+            <% for( let i = 0; i < areas.length; i++ ) { %>
+            <tr>
+                <td><%= areas[i].area %> </td>
+                <td><%= areas[i].plataforma %> </td>
+            </tr>
+            <% } %>
+        </table>
+    </div>
+</div>
+<%- include ("./static/footer") %>
+
+<script>
+
+    const picker = datepicker('#selectFecha', {
+        customDays: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+        overlayPlaceholder: 'Seleccionar Mes',
+        customMonths: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        disabled: true,
+        minDate: new Date(2020, 0, 1),
+        formatter: (input, date, instance) => {
+            let mm = date.getMonth() + 1;
+            let dd = date.getDate();
+            let yy = date.getFullYear();
+            let myDateString = yy + '-' + mm + '-' + dd;
+            input.value = myDateString
+            getInfo(myDateString)
+            enablePoppers()
+        }
+    })
+
+    function enablePoppers() {
+        $("[data-toggle=popover]").popover({
+            sanitize: false,
+            html: true,
+            content: function () {
+                var content = $(this).attr("data-popover-content");
+                return $(content).children(".popover-body").html();
+            }
+        })
+        handSpan.classList.add('animate__animated', 'animate__repeat-3', 'animate__slow', 'animate__headShake')
+    }
+
+
+    let selectArea = document.getElementById('selectArea')
+    let selectCliente = document.getElementById('selectCliente')
+    let selectFecha = document.getElementById('selectFecha')
+    let selectTurno = document.getElementById('selectTurno')
+    let handSpan = document.getElementById('handSpan')
+    let tProd = document.querySelectorAll('.tProducido')
+    let btnSubmit = document.getElementById('btnSubmit')
+    let prodIncompleto = []
+    let prodCompleto = []
+    let tituloSuccess = document.getElementById("tituloSuccess")
+
+    selectCliente.addEventListener('change', () => { filterAll(), filterArea() })
+    selectArea.addEventListener('change', filterAll)
+    selectTurno.addEventListener('change', filterAll)
+    btnSubmit.addEventListener('mouseover', () => { btnSubmit.focus() })
+
+
+
+    function getInfo(fecha) {
+        axios.get(`/getProgramacion/${fecha}`)
+            .then((response) => {
+                let programacion = response.data
+                let tableRef = document.getElementById('tablaProgramacion').getElementsByTagName('tbody')[0];
+                let tableHead = document.getElementById('tablaProgramacion').getElementsByTagName('th');
+                tableRef.innerHTML = "";
+                let componente = ""
+
+                if (programacion.length > 1) {
+                    selectArea.disabled = false
+                    selectCliente.disabled = false
+                    selectTurno.disabled = false
+
+                    programacion.forEach((numero) => {
+
+                        if (numero.producido != null) {
+                            let tdifClass
+                            let diferencia = numero.cantidad - numero.producido
+
+  
+                            if (numero.cantidad == numero.producido) {
+                                state = "disabled"
+                                selectCausa = "Seleccionar"
+                                selectComponente = "Seleccionar"
+                                selectJustificacion = ""
+                                tdifClass = "bg-success"
+                            }else if(numero.cantidad < numero.producido){
+                                diferencia = numero.producido - numero.cantidad
+                                state = "disabled"
+                                selectCausa = "Seleccionar"
+                                selectComponente = "Seleccionar"
+                                selectJustificacion = ""
+                                tdifClass = "bg-warning"
+                            }else{
+                                state = ""
+                                selectCausa = numero.causa
+                                selectComponente = numero.componente
+                                selectJustificacion = numero.justificacion
+                                tdifClass = "bg-danger"
+                            }
+                            
+
+                            row = `
+                            <tr>
+                                <td style="display:none;"><input type="text" class="form-control tId bg-secondary text-white" value="${numero.id}" name="id" hidden ></td>
+                                <td><input type="text" class="form-control tNumeroParte bg-secondary text-white" value="${numero.numero_parte}"  disabled></td>
+                                <td><input type="number" class="form-control tProgramado bg-secondary text-white" value="${numero.cantidad}" disabled></td>
+                                <td><input type="number" class="form-control tProducido" name="producido-${numero.id}" value="${numero.producido}" onkeydown="if (event.keyCode == 13) {event.preventDefault()}"></td>
+                                <td><input type="number" class="form-control tDif ${tdifClass} text-white" value="${diferencia}" disabled></td>
+                                <td>
+                                    <select class="form-control tCausa"  name="causa-${numero.id}" ${state}>
+                                        <option>${selectCausa}</option
+                                        <% for (let i = 0; i < causas.length; i++) { %>
+                                            <option><%=causas[i].causa%></option><%}%>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control tComponente"  name="componente-${numero.id}" ${state}>
+                                        <option>${selectComponente}</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" class="form-control tJustificacion"  value="${selectJustificacion}"  name="justificacion-${numero.id}" ${state} onkeydown="if (event.keyCode == 13) {event.preventDefault()}"></td>
+                            </tr>
+                            `
+                        } else {
+
+                            row = `
+                            <tr>
+                                <td style="display:none;"><input type="text" class="form-control tId bg-secondary text-white" value="${numero.id}" name="id" hidden ></td>
+                                <td><input type="text" class="form-control tNumeroParte bg-secondary text-white" value="${numero.numero_parte}"  disabled></td>
+                                <td><input type="number" class="form-control tProgramado bg-secondary text-white" value="${numero.cantidad}" disabled></td>
+                                <td><input type="number" class="form-control tProducido" name="producido-${numero.id}" onkeydown="if (event.keyCode == 13) {event.preventDefault()}"></td>
+                                <td><input type="number" class="form-control bg-secondary tDif text-white" value="" disabled></td>
+                                <td>
+                                    <select class="form-control tCausa" disabled name="causa-${numero.id}">
+                                        <option>Seleccionar</option
+                                        <% for (let i = 0; i < causas.length; i++) { %>
+                                            <option><%=causas[i].causa%></option><%}%>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control tComponente" disabled name="componente-${numero.id}">
+                                        <option>Seleccionar</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" class="form-control tJustificacion"  value="" disabled name="justificacion-${numero.id}" onkeydown="if (event.keyCode == 13) {event.preventDefault()}"></td>
+                            </tr>
+                            `
+
+                        }
+                        let newRow = tableRef.insertRow(tableRef.rows.length);
+                        newRow.classList.add(`turno-${numero.turno},cliente-${(numero.cliente).replace(/\s+/g, '')},area-${(numero.area)}`)
+                        return newRow.innerHTML = row;
+                    })
+
+                } else {
+                    row = `<td colspan="${tableHead.length}"><div class="alert alert-warning" role="alert" style="font-size: larger;"><span class="fas fa-exclamation-circle"></span>Sin programacion</div></td>`
+                    let newRow = tableRef.insertRow(tableRef.rows.length);
+                    selectArea.disabled = true
+                    selectCliente.disabled = true
+                    selectTurno.disabled = true
+                    return newRow.innerHTML = row;
+                }
+                return programacion
+            })
+            .then((response) => { fillOptions(response), checkDif(response) })
+            .catch((error) => { console.error(error) })
+            .finally(() => { });
+    }
+
+
+    function fillOptions(programacion) {
+
+
+        let areas = []
+        let clientes = []
+        let turnos = []
+
+        selectArea.innerHTML = ""
+        selectCliente.innerHTML = ""
+        selectTurno.innerHTML = ""
+        option = document.createElement('option')
+        option1 = document.createElement('option')
+        option2 = document.createElement('option')
+        option.text = "Seleccionar"
+        option1.text = "Seleccionar"
+        option2.text = "Seleccionar"
+        selectArea.add(option)
+        selectCliente.add(option1)
+        selectTurno.add(option2)
+
+
+
+        for (let i = 0; i < programacion.length; i++) {
+            turno = programacion[i].turno
+            if (turnos.indexOf(turno) === -1) {
+                turnos.push(turno)
+                option = document.createElement('option')
+                option.text = turno
+                selectTurno.add(option)
+
+            }
+        }
+
+        for (let i = 0; i < programacion.length; i++) {
+            cliente = programacion[i].cliente
+            if (clientes.indexOf(cliente) === -1) {
+                clientes.push(`${cliente}`)
+                option = document.createElement('option')
+                option.text = cliente
+                selectCliente.add(option)
+
+            }
+        }
+
+        for (let i = 0; i < programacion.length; i++) {
+            area = programacion[i].area
+            if (areas.indexOf(area) === -1) {
+                areas.push(area)
+                option = document.createElement('option')
+                option.text = area
+                selectArea.add(option)
+
+            }
+        }
+
+    }
+
+
+    function filterAll() {
+        selectT = selectTurno.options[selectTurno.options.selectedIndex].innerHTML
+        selectC = selectCliente.options[selectCliente.options.selectedIndex].innerHTML
+        selectP = selectArea.options[selectArea.options.selectedIndex].innerHTML
+
+
+        const trs = document.querySelectorAll('#tablaProgramacion tr:not(.header)');
+
+        if (selectT == "Seleccionar") { selectT = "" }
+        if (selectC == "Seleccionar") { selectC = "" }
+        if (selectP == "Seleccionar") { selectP = "" }
+
+        trs.forEach(tr => {
+            if (tr.className.includes(`turno-${selectT}`) && tr.className.includes(`cliente-${selectC.replace(/\s+/g, '')}`) && tr.className.includes(`area-${selectP.replace(/\s+/g, '')}`)) {
+                tr.style.display = ""
+            } else {
+                tr.disabled = true
+                tr.style.display = "none"
+            }
+        })
+    }
+
+    function filterArea() {
+
+        selectArea.innerHTML = ""
+        option.text = "Seleccionar"
+        selectArea.add(option)
+
+        selectC = selectCliente.options[selectCliente.options.selectedIndex].innerHTML
+        let partnums = document.querySelectorAll(".tNumeroParte")
+        let trs = document.querySelectorAll('#tablaProgramacion tr:not(.header)')
+
+        let index = []
+        let areas = []
+
+        for (let i = 0; i < trs.length; i++) {
+            if (trs[i].style.display !== "none") {
+                index.push(i)
+            }
+        }
+
+
+        for (let i = 0; i < index.length; i++) {
+
+            axios.get(`/getPlataforma/${partnums[index[i]].value}`)
+                .then((response) => {
+                    let area = response.data[0].area
+
+                    if (areas.indexOf(area) === -1) {
+                        areas.push(area)
+                        option = document.createElement('option')
+                        option.text = area
+                        selectArea.add(option)
+                    }
+                })
+                .catch((error) => { console.error(error) })
+        }
+    }
+
+
+
+
+
+
+    function checkDif(producido) {
+        let tId = document.querySelectorAll('.tId')
+        let tNumeroParte = document.querySelectorAll('.tNumeroParte')
+        let tProgramado = document.querySelectorAll('.tProgramado')
+        let tProducido = document.querySelectorAll('.tProducido')
+        let tDif = document.querySelectorAll('.tDif')
+        let tCausa = document.querySelectorAll('.tCausa')
+        let tComponente = document.querySelectorAll('.tComponente')
+        let tJustificacion = document.querySelectorAll('.tJustificacion')
+
+
+
+
+        for (let i = 0; i < tNumeroParte.length; i++) {
+            tProducido[i].addEventListener('keyup', () => {
+                if (parseInt(tProgramado[i].value) == parseInt(tProducido[i].value)) {
+                    tDif[i].value = parseInt(tProgramado[i].value) - parseInt(tProducido[i].value)
+                    tDif[i].classList.remove('bg-secondary')
+                    tDif[i].classList.remove('bg-danger')
+                    tDif[i].classList.remove('bg-warning')
+                    tDif[i].classList.add('bg-success')
+                    tCausa[i].disabled = true
+                    tComponente[i].disabled = true
+                    tJustificacion[i].disabled = true
+                }else if(parseInt(tProgramado[i].value) < parseInt(tProducido[i].value)){
+                    tDif[i].value = parseInt(tProducido[i].value) - parseInt(tProgramado[i].value)
+                    tDif[i].classList.remove('bg-secondary')
+                    tDif[i].classList.remove('bg-danger')
+                    tDif[i].classList.remove('bg-success')
+                    tDif[i].classList.add('bg-warning')
+                    tCausa[i].disabled = true
+                    tComponente[i].disabled = true
+                    tJustificacion[i].disabled = true
+                }else if (tProducido[i].value == "" || tProducido[i].value.length == 0) {
+                    tDif[i].value = ""
+                    tDif[i].classList.remove('bg-danger')
+                    tDif[i].classList.remove('bg-success')
+                    tDif[i].classList.remove('bg-warning')
+                    tDif[i].classList.add('bg-secondary')
+                    tCausa[i].disabled = true
+                    tComponente[i].disabled = true
+                    tJustificacion[i].disabled = true
+                } else {
+                    tDif[i].value = parseInt(tProgramado[i].value) - parseInt(tProducido[i].value)
+                    tDif[i].classList.remove('bg-secondary')
+                    tDif[i].classList.remove('bg-danger')
+                    tDif[i].classList.add('bg-danger')
+                    tCausa[i].disabled = false
+                    tComponente[i].disabled = false
+                    tJustificacion[i].disabled = false
+                }
+            })
+
+            tProducido[i].addEventListener('change', () => {
+                if (tProgramado[i].value == tProducido[i].value) {
+
+
+                    prodCompleto.push({ id: tId[i].value, producido: tProducido[i].value })
+
+                    tDif[i].classList.add('animate__animated', 'animate__flip')
+                    tDif[i].classList.remove('animate__flipInX')
+                    tDif[i].classList.remove('animate__flipInY')
+                    
+                }else if(parseInt(tProgramado[i].value) < parseInt(tProducido[i].value)){
+                    prodCompleto.push({ id: tId[i].value, producido: tProducido[i].value })
+                    tDif[i].classList.add('animate__animated', 'animate__flip')
+                    tDif[i].classList.remove('animate__flipInX')
+                    tDif[i].classList.remove('animate__flipInY')
+
+
+                } else if (tProducido[i].value == "" || tProducido[i].value.length == 0) {
+
+                    let indexComp = prodCompleto.findIndex(obj => obj.id == tId[i].value)
+                    let indexInc = prodIncompleto.findIndex(obj => obj.id == tId[i].value)
+
+                    if (indexComp !== -1) prodCompleto.splice(indexComp, 1)        
+                    if (indexInc !== -1) prodIncompleto.splice(indexInc, 1)
+
+                    tDif[i].classList.add('animate__animated', 'animate__flipInX')
+                    tDif[i].classList.remove('animate__flip')
+                    tDif[i].classList.remove('animate__flipInY')
+                } else {
+                    prodIncompleto.push({ id: tId[i].value, producido: tProducido[i].value })
+
+                    tDif[i].classList.add('animate__animated', 'animate__flipInY')
+                    tDif[i].classList.remove('animate__flipInX')
+                    tDif[i].classList.remove('animate__flip')
+
+                    axios.get(`/getComponentes/${tNumeroParte[i].value}`)
+                        .then((response) => {
+                            let componentes = response.data
+                            option = document.createElement('option')
+                            componente = componentes[0].mandril
+                            option.text = componente
+                            tComponente[i].add(option)
+                        })
+                        .catch((error) => { console.error(error) })
+                }
+
+                if (prodCompleto.length > 0 || prodIncompleto.length > 0) {
+                    btnSubmit.disabled = false
+                    btnSubmit.style.visibility = "visible"
+                    btnSubmit.classList.remove('animate__animated', 'animate__flipOutX')
+                    btnSubmit.classList.add('animate__animated', 'animate__flipInX', 'animate__delay-1s')
+                } else if (prodCompleto.length == 0 && prodIncompleto.length == 0) {
+                    btnSubmit.disabled = true
+                    btnSubmit.classList.remove('animate__animated', 'animate__flipInX', 'animate__delay-1s')
+                    btnSubmit.classList.add('animate__animated', 'animate__flipOutX')
+                    setTimeout(function () {
+                        btnSubmit.style.visibility = "hidden"
+                    }, 1000);
+
+                }
+
+            })
+        }
+    }
+    
+
+
+    if ("<%=status%>"=="guardado") {
+        $('#myModal2').modal('show'); 
+    }
+    
+
+
+
+</script>

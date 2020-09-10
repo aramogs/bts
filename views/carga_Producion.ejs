@@ -1,0 +1,281 @@
+<%- include ("./static/header") %>
+<%- include ("./static/sidebar") %>
+<%- include ("./static/navbar") %>
+
+
+<div class="col-xl-12 jumbotron jumbotron-fluid animated bounceInDown bg-transparent jumbotronBg">
+    <div class="container">
+        <img src="/img/TristoneLogo.png" class="img-logo rounded mx-auto d-block" alt="Tristone Flowtech">
+        <h1 class="display-4 text-center csvTitulo">Carga de Programacion</h1>
+        <p class="lead text-center"></p>
+    </div>
+</div>
+<div class="container">
+    <div class="card text-center">
+        <h5 class="card-header bg-dark text-white"><span class="text-success fas fa-file-excel"> </span> Carga de
+            programacion mediante archivo de excel</h5>
+        <div class="card-body">
+            <div class="row">
+
+                <div class="col-lg-12 justify-content-center">
+                    <div class="animate__animated animate__headShake animate__repeat-3">
+                        <h2><span class="badge badge-danger">Este programa funciona solamente con el archivo de
+                                produccion</span></h2>
+                    </div>
+                </div>
+            </div>
+            <form onsubmit="event.preventDefault(); sendData();">
+                <div class="form-group ">
+                    <div class="row">
+                        <div class="text-center col" id="insert_excel">
+                            <div class="box">
+                                <input id="excelFile" name="excelFile" type="file"
+                                    accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                                <label for="excelFile"></label>
+                            </div>
+                            <br>
+                            <div class="form-group text-center col">
+                                <input id="btn_excel" type="submit" formaction="/verificarFechas"
+                                    class="btn btn-secondary  btn-sm btn-block animate__animated animate__flipOutX"
+                                    disabled></input>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+
+
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header text-center">
+                            <h2 class="modal-title " id="myModalLabel"> <span
+                                    class="text-danger fas fa-exclamation-circle"></span> Ya existe una programacion
+                                para estas fechas</h2>
+                            </h2>
+                            <button type="button" class="btnCancelar close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+
+                        </div>
+                        <div class="modal-body">
+                            <p><span class="text-danger fas fa-exclamation-triangle"></span>Para sustituir una carga
+                                anterior seleccione la correspondiente</p> <br>
+                            <ul class="list-group" id="cargasAnteriores">
+
+                            </ul class="list-group">
+                        </div>
+                        <br>
+                        <hr>
+                        <div class="modal-footer">
+
+                            <button type="button" id="btnGuardar" class="btn btn-success " data-dismiss="modal"><span
+                                    class="text-white fas fa-file-excel"></span>
+                                Cargar nuevo archivo</button>
+                            <button type="button" id="btnBorrarContinuar" class="btn btn-danger mr-auto" hidden><span
+                                    class="text-white fas fa-trash-alt" hidden></span>
+                                Borrar&Continuar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade animate__animated animate__zoomInDown" id="myModal2" tabindex="-1"
+                aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <!-- <div class="modal-header text-center">
+                            <h2 class="modal-title " id="myModalLabel"> <span
+                                    class="text-success  fas fa-exclamation-circle"></span>
+                                Cargado con exito</h2>
+                        </div> -->
+                        <div class="modal-body">
+                            <h5 id="tituloSuccess"></h5>
+                            <p id="cantidadSuccess" style="font-size: x-large"></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btnCancelar btn btn-primary btn-block mr-auto"
+                                data-dismiss="modal"><span class="text-white fas fa-times-circle"></span>
+                                Terminar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="myModal3" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header text-center">
+                            <h2 class="modal-title "> <span class="text-secondary  fas fa-stopwatch"></span>
+                                Procesando archivo</h2>
+                            <div class="spinner-grow spinner-grow-sm text-warning mt-4" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                            <div class="spinner-grow spinner-grow-sm text-primary mt-4" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                            <div class="spinner-grow spinner-grow-sm text-secondary mt-4" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+</div>
+</div>
+
+<%- include ("./static/footer") %>
+
+<script>
+
+    $('#myModal').on('shown.bs.modal', function () {
+        $('#myInput').trigger('focus')
+    })
+
+    let excelFile = document.getElementById("excelFile")
+    let btnBorrarContinuar = document.getElementById("btnBorrarContinuar")
+    let btnCancelar = document.querySelectorAll(".btnCancelar")
+    let tituloSuccess = document.getElementById("tituloSuccess")
+    let cantidadSuccess = document.getElementById("cantidadSuccess")
+    let cargasAnteriores = document.getElementById("cargasAnteriores")
+    let btnGuardar = document.getElementById("btnGuardar")
+    let formData = new FormData()
+    btnGuardar.addEventListener('click', insert_Excel)
+
+    btnCancelar.forEach(element => {
+        element.addEventListener('click', deleteFile)
+    });
+
+
+
+
+    document.getElementById("excelFile").addEventListener("change", () => {
+        if (document.getElementById("excelFile").files.length == 0) {
+            document.getElementById("btn_excel").disabled = true;
+            document.getElementById("btn_excel").classList.remove("animate__flipInX")
+            document.getElementById("btn_excel").classList.add("animate__flipOutX")
+        } else {
+            document.getElementById("btn_excel").disabled = false;
+            document.getElementById("btn_excel").classList.remove("animate__flipOutX")
+            document.getElementById("btn_excel").classList.add("animate__flipInX")
+        }
+    });
+
+
+
+
+    function sendData() {
+        $('#myModal3').modal({ backdrop: 'static', keyboard: false })
+        formData.delete('excelFile')
+        formData.append('excelFile', excelFile.files[0])
+        axios({
+            method: 'post',
+            url: `/verificarFechas/${excelFile.files[0].name}`,
+            data: formData,
+            headers: { 'Content-Type': 'multipart/form-data', 'Accept': 'application/json', }
+        })
+            .then((response) => {
+                if (response.data == "noData") {
+                    axios({
+                        method: 'post',
+                        url: `/insertar_excel/${excelFile.files[0].name}`,
+                        data: formData,
+                        headers: { 'Content-Type': 'multipart/form-data', 'Accept': 'application/json', }
+                    })
+                        .then((result) => {
+                            setTimeout(() => { $('#myModal3').modal('hide') }, 500);
+                            $('#myModal').modal('hide');
+                            $('#myModal2').modal('show');
+                            tituloSuccess.innerHTML = `Programacion Cargada con existo se insertaron <span class="text-success">${result.data.affectedRows}</span> filas`
+                        })
+                        .catch((err) => { console.error(err) })
+                } else {
+
+                    let ids = response.data
+                    cargasAnteriores.innerHTML = ""
+
+                    ids.forEach(element => {
+                        let li = document.createElement("li");
+                        li.classList.add("list-group-item")
+                        li.innerHTML =
+                            `
+                        <button  class="btn btn-danger btn-block btnModBorrar" value="${element}">
+                            <span class="text-white fas fa-trash-alt"> </span>${element}</button>
+                            `
+                        cargasAnteriores.appendChild(li);
+                    });
+                    let btnModBorrar = document.querySelectorAll('.btnModBorrar')
+                    btnModBorrar.forEach(element => {
+                        element.addEventListener('click', () => { deleteInsert_Excel(element.value) })
+                    });
+                    setTimeout(() => { $('#myModal3').modal('hide') }, 500);
+
+                    $('#myModal').modal('show');
+
+                }
+            })
+            .catch((err) => { console.error(err) });
+    }
+
+    function deleteInsert_Excel(file_name) {
+        $('#myModal3').modal({ backdrop: 'static', keyboard: false })
+        $('#myModal').modal('hide');
+        axios({
+            method: 'post',
+            url: `/deleteInsert_excel/${file_name}/${excelFile.files[0].name}`,
+            data: formData,
+            headers: { 'Content-Type': 'multipart/form-data', 'Accept': 'application/json', }
+        })
+            .then((result) => {
+                if (result.data.affectedRows) {
+                    setTimeout(() => { $('#myModal3').modal('hide') }, 500);
+                    $('#myModal2').modal('show');
+                    tituloSuccess.innerHTML = `Programacion reemplazada con existo `
+                    cantidadSuccess.innerHTML = `Se afectaron <span class="text-warning" style="font">${result.data.affectedRows}</span> filas`
+                } else {
+                    setTimeout(() => { $('#myModal3').modal('hide') }, 500);
+                    $('#myModal2').modal('show');
+                    tituloSuccess.innerHTML = `<h2><span class=""></span>Atencion problema al cargar</h2> `
+                    cantidadSuccess.innerHTML = `<span class="text-danger fas fa-exclamation-triangle" style="font">Error: ${result.data.sqlMessage}</span><br><span class="text-dark">Este proceso elimina la programacion seleccionada, verificar los archivos cargados con anterioridad</span>`
+                }
+
+            })
+            .catch((err) => { console.error(err) })
+    }
+
+    function insert_Excel() {
+        $('#myModal3').modal({ backdrop: 'static', keyboard: false })
+        axios({
+            method: 'post',
+            url: `/insertar_excel/${excelFile.files[0].name}`,
+            data: formData,
+            headers: { 'Content-Type': 'multipart/form-data', 'Accept': 'application/json', }
+        })
+            .then((result) => {
+                setTimeout(() => { $('#myModal3').modal('hide') }, 500);
+                $('#myModal').modal('hide');
+                $('#myModal2').modal('show');
+                tituloSuccess.innerHTML = `Programacion Cargada con existo se insertaron <span class="text-success">${result.data.affectedRows}</span> filas`
+            })
+            .catch((err) => { console.error(err) })
+    }
+
+    function deleteFile() {
+        excelFile.value = ""
+        document.getElementById("btn_excel").disabled = true;
+        document.getElementById("btn_excel").classList.remove("animate__flipInX")
+        document.getElementById("btn_excel").classList.add("animate__flipOutX")
+    }
+
+
+
+</script>
