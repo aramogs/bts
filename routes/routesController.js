@@ -7,7 +7,7 @@ const funcion = require('../public/js/functions/controllerFunctions');
 
 //Require ExcelJs
 const Excel = require('exceljs');
-
+const moment = require('moment')
 
 controller.index_GET = (req, res) => {
     user = req.connection.user
@@ -46,16 +46,21 @@ function acceso(req) {
 
 function ExcelDateToJSDate(fecha) {
 
+    let date = new Date(Math.round((fecha - 25569) * 86400 * 1000))
+    let formatedDate = moment.utc(date).format("YYYY-MM-DD")
+    // let d = new Date(Math.round((fecha - 25569) * 86400 * 1000)),
+    //     month = '' + (d.getMonth() + 1),
+    //     day = '' + d.getDate(),
+    //     year = d.getFullYear();
 
-    let d = new Date(Math.round((fecha - 25569) * 86400 * 1000)),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
+    // if (month.length < 2) month = '0' + month;
+    // if (day.length < 2) day = '0' + day;
 
-    if (month.length < 2) month = '0' + month;
-    if (day.length < 2) day = '0' + day;
+    // console.log(`${year}-${month}-${day} ✋`);
+    // console.log(`${date} ✌`);    
+    // return [year, month, day].join('-');
+    return formatedDate
 
-    return [year, month, day].join('-');
 }
 
 
@@ -95,17 +100,19 @@ const arreglosExcel = (excel, id_carga) => {
                 }
                 for (let i = 0; i < arreglo3.length; i++) {
 
-                    for (let y = 2; y < arreglo3[i].length; y++) {
+                    for (let y = 3; y < arreglo3[i].length; y++) {
                         arreglo4 = []
 
                         let cliente = ""
                         let numPart = ""
+                        let area = ""
 
                         cliente = `"${arreglo3[i][0]}"`
                         numPart = `"${arreglo3[i][1]}"`
+                        area = `"${arreglo3[i][2]}"`
 
                         arreglo4.push(`"${id_carga}"`)
-                        arreglo4.push(cliente, numPart)
+                        arreglo4.push(cliente, numPart,area)
                         let fecha = parseInt((arreglo3[i][y]).toString().substr(0, 5))
                         let turno = parseInt((arreglo3[i][y]).toString().substring(5, 6))
                         let cantidad = parseInt((arreglo3[i][y]).toString().substr(6))
@@ -118,6 +125,7 @@ const arreglosExcel = (excel, id_carga) => {
                         arreglo5.push(arreglo4)
                     }
                 }
+
                 resolve({ arreglo5, fechas })
                 reject("Error al cargar arreglos")
             })
@@ -171,9 +179,9 @@ controller.getComponentes_GET = (req, res) => {
         .catch((err) => { console.error(err) })
 }
 
-controller.getPlataforma_GET = (req, res) => {
+controller.getArea_GET = (req, res) => {
     numPart = req.params.numPart
-    funcion.getPlataforma(numPart)
+    funcion.getArea(numPart)
         .then((result) => { res.json(result) })
         .catch((err) => console.error(err))
 }
@@ -219,6 +227,7 @@ controller.guardarProd_POST = (req, res) => {
 
     forLoop()
         .then((result) => {
+       
             let status = "guardado"
             user = req.connection.user
             Promise.all([funcion.getCausas(), funcion.getAreas()])
@@ -436,6 +445,7 @@ controller.getCantidadMensual_GET = (req, res) => {
     let selectedMonth = req.params.selectedMonth
     let cliente = req.params.cliente
 
+
     // selectedDate = selectedDate.replace(regexFecha,"")
 
     funcion.getCantMensual(selectedMonth, selectedDate, cliente)
@@ -444,7 +454,17 @@ controller.getCantidadMensual_GET = (req, res) => {
 }
 
 controller.graficaClienteArea_GET = (req, res) => {
-    res.json("OK")
+    user = req.connection.user
+    res.render("graficaClienteArea.ejs",{
+        user
+    })
+}
+
+controller.getClientesFecha_GET = (req,res) =>{
+    fecha = req.params.fecha
+    funcion.getClientesFecha(fecha)
+    .then((result) => { res.json(result) })
+    .catch((err) => { res.json(err) })
 }
 
 

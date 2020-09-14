@@ -5,7 +5,7 @@
   "main": "bts.js",
   "scripts": {
     "dev": "nodemon -e ejs,js,css -i .git/,node_modules/ -- bts.js",
-    "start": "node bts.js"
+    "start": "nodemon bts.js"
   },
   "keywords": [],
   "author": "",

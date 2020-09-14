@@ -11,7 +11,7 @@ router.get('/acceso_denegado',routesController.accesoDenegado_GET);
 router.get('/registro', routesController.registro_GET);
 router.get('/getProgramacion/:fecha', routesController.getProgramacion_GET);
 router.get('/getComponentes/:numPart', routesController.getComponentes_GET);
-router.get('/getPlataforma/:numPart', routesController.getPlataforma_GET);
+router.get('/getArea/:numPart', routesController.getArea_GET);
 router.get('/getAreas', routesController.getAreas_GET);
 router.post('/guardarProd', routesController.guardarProd_POST);
 router.get('/cargaProgramacion', routesController.cargaProgramacion_GET);
@@ -24,7 +24,7 @@ router.post('/guardarAjuste', routesController.guardarAjuste_POST);
 router.get('/getAjuste/:fecha', routesController.getAjuste_GET);
 router.get('/getCantidadMensual/:selectedDate/:selectedMonth/:cliente',routesController.getCantidadMensual_GET);
 router.get('/graficaClienteArea',routesController.graficaClienteArea_GET);
-
+router.get('/getClientesFecha/:fecha',routesController.getClientesFecha_GET);
 // // router.get('*', (req, res) => {
 // //   res.redirect('http://tftdelsrv001:3000/not_found');
 // // });

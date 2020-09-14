@@ -17,7 +17,7 @@ img {
 .jumbotronBg {
     background: url('../img/white-background.jpg') no-repeat center center;
     background-size: cover;
-    height: 1000%;
+   // height: 50%;
 }
 
 .btnNavbar {
@@ -43,11 +43,11 @@ img {
 }
 
 .cdelay-2 {
-    animation-delay: .5s;
+    animation-delay: .35s;
 }
 
 .cdelay-3 {
-    animation-delay: .75s;
+    animation-delay: .45s;
 }
 
 .cdelay-4 {

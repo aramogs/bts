@@ -3,10 +3,11 @@ const funcion = {};
 const db = require('../../db/conn_bts');
 const db_a = require('../../db/conn_areas');
 const db_e = require('../../db/conn_empleados');
+const moment = require('moment')
 
-funcion.getPlataforma = (numPart) => {
+funcion.getArea = (numPart) => {
     return new Promise((resolve, reject) => {
-        db(`SELECT area FROM plataformas WHERE numero_parte ="${numPart}"`)
+        db(`SELECT area FROM programacion WHERE numero_parte ="${numPart}"`)
             .then((result) => { resolve(result) })
             .catch((error) => { reject(error) })
     })
@@ -21,13 +22,23 @@ funcion.getTurnos = () => {
 }
 
 
-funcion.getClientes = (plataforma) => {
+// funcion.getClientes = (plataforma) => {
+//     return new Promise((resolve, reject) => {
+//         db(`SELECT DISTINCT cliente FROM plataformas WHERE plataforma ="${plataforma}"`)
+//             .then((result) => { resolve(result) })
+//             .catch((error) => { reject(error) })
+//     })
+// }
+
+funcion.getClientesFecha = (fecha) => {
+    let selectedDate = moment.utc(new Date(fecha)).format("YYYY-MM-DD")
     return new Promise((resolve, reject) => {
-        db(`SELECT DISTINCT cliente FROM plataformas WHERE plataforma ="${plataforma}"`)
+        db(`SELECT DISTINCT cliente FROM programacion WHERE fecha ='${selectedDate}'`)
             .then((result) => { resolve(result) })
             .catch((error) => { reject(error) })
     })
 }
+
 
 funcion.getProgramacion = (fecha) => {
     return new Promise((resolve, reject) => {
@@ -39,20 +50,17 @@ funcion.getProgramacion = (fecha) => {
         programacion.fecha,
         programacion.turno,
         programacion.cantidad,
-        plataformas.plataforma,
-        plataformas.area,
+        programacion.area,
         producido.producido,
         producido.causa,
         producido.componente,
         producido.justificacion
     FROM
-        plataformas,
         programacion
             LEFT JOIN
         producido ON producido.id_programacion = programacion.id
     WHERE
-        programacion.numero_parte = plataformas.numero_parte
-            AND fecha = '${fecha}'
+         fecha = '${fecha}'
     GROUP BY id
         `)
             .then((result) => { resolve(result) })
@@ -63,11 +71,10 @@ funcion.getProgramacion = (fecha) => {
 funcion.getProducido = (fecha) => {
     return new Promise((resolve, reject) => {
         db(`SELECT 
-        id,programacion.cliente,programacion.numero_parte,programacion.fecha,programacion.turno,programacion.cantidad,
-        plataformas.plataforma,plataformas.area
+        id,programacion.cliente,programacion.numero_parte,programacion.fecha,programacion.turno,programacion.cantidad,area
         FROM 
-        programacion,plataformas 
-        WHERE programacion.numero_parte = plataformas.numero_parte AND fecha = "${fecha}"`)
+        programacion
+        WHERE fecha = "${fecha}"`)
             .then((result) => { resolve(result) })
             .catch((error) => { reject(error) })
     })
@@ -108,7 +115,7 @@ funcion.getComponentes = (numPart) => {
 
 funcion.getAreas = () => {
     return new Promise((resolve, reject) => {
-        db(`SELECT DISTINCT plataforma,area FROM plataformas ORDER BY area`)
+        db(`SELECT DISTINCT area FROM programacion ORDER BY area`)
             .then((result) => { resolve(result) })
             .catch((error) => { reject(error) })
     })
@@ -180,7 +187,7 @@ funcion.postProgramacion = (arreglo) => {
         values.push(`(${arreglo[i]})`)
     }
     return new Promise((resolve, reject) => {
-        db(`INSERT INTO programacion (id,id_carga,cliente,numero_parte,fecha,turno,cantidad) VALUES${values}`)
+        db(`INSERT INTO programacion (id,id_carga,cliente,numero_parte,area,fecha,turno,cantidad) VALUES${values}`)
             .then((result) => resolve(result))
             .catch((error) => { reject(error) })
     })
@@ -248,8 +255,7 @@ funcion.getAjuste = (fecha) => {
         programacion.turno,
         programacion.cantidad,
         programacion.cantidad_ajustada,
-        plataformas.plataforma,
-        plataformas.area,
+        programacion.area,
         producido.producido,
         producido.causa,
         producido.supervisor,
@@ -258,15 +264,13 @@ funcion.getAjuste = (fecha) => {
         ajustes_programacion.justificacion,
         ajustes_programacion.fecha
     FROM
-        plataformas,
         programacion
             LEFT JOIN
         producido ON producido.id_programacion = programacion.id
 			LEFT JOIN
 		ajustes_programacion ON ajustes_programacion.id_programacion = programacion.id
     WHERE
-        programacion.numero_parte = plataformas.numero_parte
-            AND programacion.fecha = '${fecha}'
+        programacion.fecha = '${fecha}'
     GROUP BY id
         `)
             .then((result) => { resolve(result) })
@@ -277,17 +281,20 @@ funcion.getAjuste = (fecha) => {
 
 funcion.getCantMensual = (selectedMonth,selectedDate, cliente) => {
 
+    let dateMonth = moment.utc(new Date(selectedMonth)).format("YYYY-MM")
+    let dateSelected = moment.utc(new Date(selectedDate)).format("YYYY-MM-DD")
+
     let andCliente = cliente !== "Seleccionar"? `AND cliente ="${cliente}"` : ""
     return new Promise((resolve, reject) => {
         db(`
         SELECT 
-            cantidad, cantidad_ajustada, producido.producido
+            cantidad, cantidad_ajustada, producido.producido,programacion.fecha
         FROM
             bts.programacion
         LEFT JOIN
             producido ON producido.id_programacion = programacion.id
         WHERE
-            programacion.fecha BETWEEN '${selectedMonth}' AND '${selectedDate}' ${andCliente};
+            programacion.fecha BETWEEN '${dateMonth}' AND '${dateSelected}' ${andCliente};
         `)
             .then((result) => { resolve(result) })
             .catch((error) => { reject(error) })

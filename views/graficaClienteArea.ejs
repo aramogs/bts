@@ -1,0 +1,467 @@
+<%- include ("./static/header") %>
+<%- include ("./static/sidebar") %>
+<%- include ("./static/navbar") %>
+
+
+<div class="col-xl-12 jumbotron jumbotron-fluid animated bounceInDown bg-transparent jumbotronBg">
+    <div class="container">
+        <img src="/img/TristoneLogo.png" class="img-logo rounded mx-auto d-block" alt="Tristone Flowtech">
+        <h1 class="display-4 text-center csvTitulo">Graficos Cliente/Area</h1>
+    </div>
+</div>
+<div class="container-fluid animated bounceInUp">
+    <div class="card bg-light  ">
+        <div class=" card-header text-white bg-dark ">
+            <div class="row">
+                <div class="col-lg-4"></div>
+
+
+
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>Fecha</label>
+                        <input type="text" class="form-control text-center " name="date" id="selectFecha"
+                            aria-describedby="helpId" placeholder="Seleccionar Fecha" autocomplete="off">
+
+                    </div>
+                </div>
+
+
+
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>Cliente</label>
+                        <select class="form-control text-center " id="selectCliente" disabled>
+                            <option value="">Seleccionar</option>
+
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="col-lg-4"></div>
+            </div>
+
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-1"></div>
+            <div class="col-5">
+                <div class="card">
+                    <div class="card-header bg-dark text-white text-center">
+                        <h4 class="card-title">BTS Diario <span class="badge badge-primary bCliente">General</span></h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-right">
+                            <table class="table  table-light tabl-sm table-hover">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <h5 class="card-text">Programado:</h5>
+                                        </td>
+                                        <td>
+                                            <h4><span class="badge badge-secondary bProgDia"></span></h4>
+                                        </td>
+                                        <td>
+                                            <h5 class="card-text">Producido:</h5>
+                                        </td>
+                                        <td>
+                                            <h4><span class="badge badge-secondary bProdDia"></span></h4>
+                                        </td>
+                                        <td>
+                                            <h5 class="card-text">Restante:</h5>
+                                        </td>
+                                        <td>
+                                            <h4><span class="badge badge-secondary bRestanteDia"></span></h4>
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h5 class="card-text">Mezcla:</h5>
+                                        </td>
+                                        <td>
+                                            <h4><span class="badge badge-secondary bMezclaDia"></span></h4>
+                                        </td>
+                                        <td>
+                                            <h5 class="card-text">BTS:</h5>
+                                        </td>
+                                        <td>
+                                            <h4><span class="badge badge-secondary bBtsDia"></span></h4>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <canvas id="myChart" width="100" height="20"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-5">
+                <div class="card">
+                    <div class="card-header bg-dark text-white text-center">
+                        <h4 class="card-title">BTS Mensual <span class="badge badge-primary bCliente">General</span>
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-right">
+                            <table class="table  table-light tabl-sm table-hover">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <h5 class="card-text">Programado:</h5>
+                                        </td>
+                                        <td>
+                                            <h4><span class="badge badge-secondary bProgmes"></span></h4>
+                                        </td>
+                                        <td>
+                                            <h5 class="card-text">Producido:</h5>
+                                        </td>
+                                        <td>
+                                            <h4><span class="badge badge-secondary bProdmes"></span></h4>
+                                        </td>
+                                        <td>
+                                            <h5 class="card-text">Restante:</h5>
+                                        </td>
+                                        <td>
+                                            <h4><span class="badge badge-secondary bRestanteMes"></span></h4>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h5 class="card-text">Mezcla:</h5>
+                                        </td>
+                                        <td>
+                                            <h4><span class="badge badge-secondary bMezclames"></span></h4>
+                                        </td>
+                                        <td>
+                                            <h5 class="card-text">BTS:</h5>
+                                        </td>
+                                        <td>
+                                            <h4><span class="badge badge-secondary bBtsmes"></span></h4>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <canvas id="myChart2" width="100" height="20"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-1"></div>
+        </div>
+
+
+    </div>
+</div>
+
+<%- include ("./static/footer") %>
+<script>
+    const picker = datepicker('#selectFecha', {
+        customDays: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+        overlayPlaceholder: 'Seleccionar Mes',
+        customMonths: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        disabled: true,
+        minDate: new Date(2020, 0, 1),
+        formatter: (input, date, instance) => {
+            let mm = date.getMonth() + 1;
+            let dd = date.getDate();
+            let yy = date.getFullYear();
+            let myDateString = yy + '-' + mm + '-' + dd;
+            input.value = myDateString
+            selectCliente.options.selectedIndex = 0
+            fillCards(myDateString)
+            fillOptions()
+
+        }
+    })
+
+
+    let bBtsDia = document.querySelector('.bBtsDia')
+    let bMezclaDia = document.querySelector('.bMezclaDia')
+    let bProgDia = document.querySelector('.bProgDia')
+    let bProdDia = document.querySelector('.bProdDia')
+    let bCliente = document.querySelectorAll('.bCliente')
+    let selectCliente = document.getElementById('selectCliente')
+    let selectFecha = document.getElementById('selectFecha')
+
+
+    selectCliente.addEventListener('change', () => {bClienteChange() ,fillCards() })
+
+
+    function fillOptions() {
+        let clientes = []
+                selectCliente.innerHTML = ""
+        let date = new Date(selectFecha.value)
+        let selectedDate = moment.utc(date).format("YYYY-MM-DD");
+        option = document.createElement('option')
+                option.text = "Seleccionar"
+
+                selectCliente.add(option)
+
+                axios.get(`/getClientesFecha/${selectedDate}`)
+                    .then((result) => {
+                        let clientesResult = result.data
+
+                        for (let i = 0; i < clientesResult.length; i++) {
+                            cliente = clientesResult[i].cliente
+                          
+                                clientes.push(`${cliente}`)
+                                option = document.createElement('option')
+                                option.text = cliente
+                                selectCliente.add(option)
+
+                            
+                        }
+                    })
+                    .catch((err) => { console.error(err) })
+    }
+
+
+    function bClienteChange() {
+        bCliente.forEach(element => {
+            if (selectCliente.value == "Seleccionar") {
+                element.innerHTML = "General"
+            } else {
+                element.innerHTML = selectCliente.value
+            }
+        });
+
+    }
+
+    function fillCards() {
+
+
+
+        let selectC = selectCliente.options[selectCliente.options.selectedIndex].innerHTML
+        let tProgramado = document.querySelectorAll('.tProgramado')
+        let tProducido = document.querySelectorAll('.tProducido')
+        let mezcla = document.querySelectorAll('.mezcla')
+
+
+        let bProgmes = document.querySelector('.bProgmes')
+        let bProdmes = document.querySelector('.bProdmes')
+        let bMezclames = document.querySelector('.bMezclames')
+        let bBtsmes = document.querySelector('.bBtsmes')
+        let bRestanteDia = document.querySelector('.bRestanteDia')
+        let bRestanteMes = document.querySelector('.bRestanteMes')
+
+
+
+        let date = new Date(selectFecha.value)
+        let selectedDate = moment.utc(date).format("YYYY-MM-DD");
+        let startDate = moment.utc(date).startOf('month').format("YYYY-MM-DD");
+        let selectedMonth = moment.utc(date).endOf("month").format("YYYY-MM");
+
+        axios.get(`/getCantidadMensual/'${selectedDate}'/'${selectedMonth}'/${selectC}`)
+            .then((result) => {
+                let produccion = result.data
+
+                produccion.length > 0 ? selectCliente.disabled = false : selectCliente.disabled = true
+
+                let totalProgDia = 0
+                let totalProdDia = 0
+                let totalMezclaDia = 0
+
+                let totalProgMes = 0
+                let totalProdMes = 0
+                let totalMezclaMes = 0
+
+
+
+
+
+                produccion.forEach(element => {
+                    let fecha = element.fecha
+                    if (fecha.includes(selectedDate)) {
+                        totalProgDia = element.cantidad_ajustada !== null ? totalProgDia + element.cantidad_ajustada : totalProgDia + element.cantidad
+                    }
+                });
+
+                produccion.forEach(element => {
+                    let fecha = element.fecha
+                    if (fecha.includes(selectedDate)) {
+                        if (element.producido !== null) totalProdDia = totalProdDia + element.producido
+                    }
+                });
+
+                produccion.forEach(element => {
+                    let fecha = element.fecha
+                    if (fecha.includes(selectedDate)) {
+                        totalMezclaDia = element.cantidad_ajustada !== null ? totalProdDia = Math.min(element.cantidad_ajustada, element.producido) : totalProdDia 
+                    }
+                });
+
+
+                produccion.forEach(element => {
+                    totalProgMes = element.cantidad_ajustada !== null ? totalProgMes + element.cantidad_ajustada : totalProgMes + element.cantidad
+                });
+
+                produccion.forEach(element => {
+                    if (element.producido !== null) totalProdMes = totalProdMes + element.producido
+                });
+
+                produccion.forEach(element => {
+                    if (element.producido !== null)
+                        totalMezclaMes = element.cantidad_ajustada !== null ? totalProdMes + Math.min(element.cantidad_ajustada, element.producido) : totalProdMes + Math.min(element.cantidad, element.producido)
+                });
+
+
+                bProgDia.innerHTML = totalProgDia
+                bProdDia.innerHTML = totalProdDia
+                bMezclaDia.innerHTML = totalMezclaDia
+                bRestanteDia.innerHTML = totalProgDia - totalProdDia
+
+                bProgmes.innerHTML = totalProgMes
+                bProdmes.innerHTML = totalProdMes
+                bMezclames.innerHTML = totalProdMes
+                bRestanteMes.innerHTML = totalProgMes - totalProdMes
+
+
+
+                let perMezclaDia = totalMezclaDia / totalProdDia
+                let perProdDia = totalProdDia > totalProgDia ? 1 : totalProdDia / totalProgDia
+                let btsDia = isNaN(Math.round((perProdDia * perMezclaDia) * 100)) ? 0 : Math.round((perProdDia * perMezclaDia) * 100)
+
+                console.log(totalProdDia,"🌝");
+                console.log(totalMezclaDia,"🌛");
+                console.log(totalProdDia,"🌜");
+                console.log(perMezclaDia,"\u270B");
+                console.log(perProdDia, "✌");
+                console.log(btsDia,"✍");
+                bBtsDia.innerHTML = btsDia + "%"
+
+
+                let perMezclaMes = totalProdMes / totalProdMes
+                let perProdMes = totalProdMes > totalProgMes ? 1 : totalProdMes / totalProgMes
+                let btsMes = isNaN(Math.round((perProdMes * perMezclaMes) * 100)) ? 0 : Math.round((perProdMes * perMezclaMes) * 100)
+                bBtsmes.innerHTML = btsMes + "%"
+
+
+
+                chartDia(perProdDia, perMezclaDia, btsDia)
+                chartMes(perProdMes, perMezclaMes, btsMes)
+
+
+
+
+
+
+            })
+            .catch((err) => { console.error(err) })
+
+
+
+
+    }
+
+
+    function chartDia(producido, mezcla, bts) {
+
+        // let progDia = parseInt(bProgDia.innerHTML)
+        // let prodDia = parseInt(bProdDia.innerHTML)
+        // let mezclaDia = parseInt(bMezclaDia.innerHTML)
+
+        // let perMezcla = mezclaDia / prodDia
+        // let perProd = prodDia > progDia ? 1 : prodDia / progDia
+        // let bts = isNaN(Math.round((perProd * perMezcla) * 100)) ? 0 : Math.round((perProd * perMezcla) * 100)
+
+        // bBtsDia.innerHTML = bts + "%"
+
+        let ctx = document.getElementById('myChart').getContext('2d');
+        if (window.bar != undefined)
+            window.bar.destroy();
+        window.bar = new Chart(ctx, {
+            type: 'horizontalBar',
+            data: {
+                labels: ['Producido', 'Mezcla', 'BTS'],
+                datasets: [{
+                    label: false,
+                    data: [Math.round(producido * 100), Math.round(mezcla * 100), bts],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    xAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            min: 0,
+                            max: 100,
+
+                        },
+
+                    }]
+                },
+                legend: {
+                    display: false
+                }
+            }
+        });
+
+    }
+
+    function chartMes(producido, mezcla, bts) {
+
+        let ctx2 = document.getElementById('myChart2').getContext('2d');
+        if (window.bar2 != undefined)
+            window.bar2.destroy();
+        window.bar2 = new Chart(ctx2, {
+            type: 'horizontalBar',
+            data: {
+                labels: ['Producido', 'Mezcla', 'BTS'],
+                datasets: [{
+                    label: false,
+                    data: [Math.round(producido * 100), Math.round(mezcla * 100), bts],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    xAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            min: 0,
+                            max: 100,
+
+                        },
+
+                    }]
+                },
+                legend: {
+                    display: false
+                }
+            }
+        })
+    }
+
+
+</script>
+</div>
+</body>
+
+</html>

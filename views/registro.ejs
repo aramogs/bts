@@ -22,7 +22,7 @@
                 <div class="col-lg-2">
                     <div class="form-group">
                         <label>Fecha</label>
-                        <input type="text" class="form-control text-center grow" name="date" id="selectFecha"
+                        <input type="text" class="form-control text-center" name="date" id="selectFecha"
                             aria-describedby="helpId" placeholder="Seleccionar Fecha" autocomplete="off">
                         
                     </div>
@@ -31,7 +31,7 @@
                 <div class="col-lg-2">
                     <div class="form-group">
                         <label>Turno</label>
-                        <select class="form-control text-center grow" id="selectTurno" disabled>
+                        <select class="form-control text-center" id="selectTurno" disabled>
                             <option value="">Seleccionar</option>
 
                         </select>
@@ -41,7 +41,7 @@
                 <div class="col-lg-2">
                     <div class="form-group">
                         <label>Cliente</label>
-                        <select class="form-control text-center grow" id="selectCliente" disabled>
+                        <select class="form-control text-center" id="selectCliente" disabled>
                             <option value="">Seleccionar</option>
 
                         </select>
@@ -54,7 +54,7 @@
                                 data-trigger="hover" data-popover-content="#a1" data-placement="left">Area </a>
                             <span class="fas fa-hand-point-left text-white" id="handSpan"></span></label>
 
-                        <select class="form-control text-center grow" id="selectArea" disabled>
+                        <select class="form-control text-center" id="selectArea" disabled>
                             <option value="">Seleccionar</option>
                         </select>
                     </div>
@@ -125,19 +125,19 @@
     
 
     <!-- //TODO grafico para supervisores, pero por areas no por clientes -->
-    <!-- //TODO grafico para supervisores, tambien grafico de bts por cliente-->
+
 
 <div id="a1" style="display: none;">
     <div class="popover-body">
         <table class="table table-hover table-responsive">
             <tr>
                 <th>Area</th>
-                <th>Plataforma</th>
+                <th>Cliente</th>
             </tr>
             <% for( let i = 0; i < areas.length; i++ ) { %>
             <tr>
                 <td><%= areas[i].area %> </td>
-                <td><%= areas[i].plataforma %> </td>
+                <td><%= areas[i].cliente %> </td>
             </tr>
             <% } %>
         </table>
@@ -210,7 +210,7 @@
                     selectTurno.disabled = false
 
                     programacion.forEach((numero) => {
-
+            
                         if (numero.producido != null) {
                             let tdifClass
                             let diferencia = numero.cantidad - numero.producido
@@ -409,7 +409,7 @@
 
         for (let i = 0; i < index.length; i++) {
 
-            axios.get(`/getPlataforma/${partnums[index[i]].value}`)
+            axios.get(`/getArea/${partnums[index[i]].value}`)
                 .then((response) => {
                     let area = response.data[0].area
 

@@ -23,7 +23,7 @@
                 <div class="col-lg-2">
                     <div class="form-group">
                         <label>Fecha</label>
-                        <input type="text" class="form-control text-center grow" name="date" id="selectFecha"
+                        <input type="text" class="form-control text-center " name="date" id="selectFecha"
                             aria-describedby="helpId" placeholder="Seleccionar Fecha" autocomplete="off">
 
                     </div>
@@ -34,7 +34,7 @@
                 <div class="col-lg-2">
                     <div class="form-group">
                         <label>Cliente</label>
-                        <select class="form-control text-center grow" id="selectCliente" disabled>
+                        <select class="form-control text-center " id="selectCliente" disabled>
                             <option value="">Seleccionar</option>
 
                         </select>
@@ -162,7 +162,7 @@
                             disabled style="visibility: hidden">
                     </div>
                     <br>
-                    <input type="text" class="form-control text-center grow" name="fecha" id="fecha" hidden>
+                    <input type="text" class="form-control text-center " name="fecha" id="fecha" hidden>
 
                     <div class="row">
                         <table class="table table-hover table-responsive text-center table-bordered table-sm"
@@ -489,7 +489,7 @@
         }
 
         for (let i = 0; i < index.length; i++) {
-            axios.get(`/getPlataforma/${partnums[index[i]].value}`)
+            axios.get(`/getArea/${partnums[index[i]].value}`)
                 .then((response) => {
                     let area = response.data[0].area
 
