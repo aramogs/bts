@@ -247,7 +247,7 @@
                                 <td><input type="number" class="form-control tDif ${tdifClass} text-white" value="${diferencia}" disabled></td>
                                 <td>
                                     <select class="form-control tCausa"  name="causa-${numero.id}" ${state}>
-                                        <option>${selectCausa}</option
+                                        <option>${selectCausa}</option>
                                         <% for (let i = 0; i < causas.length; i++) { %>
                                             <option><%=causas[i].causa%></option><%}%>
                                     </select>
@@ -271,7 +271,7 @@
                                 <td><input type="number" class="form-control bg-secondary tDif text-white" value="" disabled></td>
                                 <td>
                                     <select class="form-control tCausa" disabled name="causa-${numero.id}">
-                                        <option>Seleccionar</option
+                                        <option>Seleccionar</option>
                                         <% for (let i = 0; i < causas.length; i++) { %>
                                             <option><%=causas[i].causa%></option><%}%>
                                     </select>
